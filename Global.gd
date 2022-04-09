@@ -15,7 +15,7 @@ func on_naub_naub_contact(active_naub: Naub, other_naub: Naub):
 	if active_naub.no_links() or other_naub.no_links():
 		link_two_naubs_together(active_naub, other_naub)
 	elif active_naub.modulate == other_naub.modulate and not are_neighbors(active_naub, other_naub):
-		link_two_naubs_together(active_naub, other_naub)
+		merge_two_naubs_to_one(active_naub, other_naub)
 		find_and_pop_some_cycle(active_naub, other_naub)
 
 
@@ -24,6 +24,12 @@ func link_two_naubs_together(active_naub: Naub, other_naub: Naub):
 	other_naub.linked_naubs.append(active_naub)	
 	var link: NaubLink = NaubLinkScene.instance()
 	link.attach_to_naubs(active_naub, other_naub)
+
+
+func merge_two_naubs_to_one(active_naub: Naub, other_naub: Naub):
+	for naub in other_naub.linked_naubs:
+		link_two_naubs_together(active_naub, naub)
+	other_naub.free()
 
 
 func find_and_pop_some_cycle(active_naub: Naub, other_naub: Naub):
