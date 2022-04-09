@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://NaubLink.gd" type="Script" id=1]
+
+[node name="Node2D" type="Node2D"]
+z_index = -5
+script = ExtResource( 1 )
+
+[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
+bias = 0.9
+disable_collision = false
+length = 40.0
+rest_length = 40.0
+stiffness = 64.0
+damping = 0.16
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( 0, 0, 10, 0 )
+default_color = Color( 0, 0, 0, 1 )

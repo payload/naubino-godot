@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Naub.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Game.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 1000, 1000 )
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 50.0
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Naub1" parent="." instance=ExtResource( 1 )]
+modulate = Color( 0.831373, 0.403922, 0.403922, 1 )
+
+[node name="Naub2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 207, 101 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+
+[node name="GravityCenter" type="Node2D" parent="."]
+
+[node name="Pull" type="Area2D" parent="GravityCenter"]
+space_override = 1
+gravity_point = true
+gravity_vec = Vector2( 0, 0 )
+gravity = 66.0
+linear_damp = 0.0
+
+[node name="Rectangle" type="CollisionShape2D" parent="GravityCenter/Pull"]
+visible = false
+shape = SubResource( 1 )
+
+[node name="Null" type="Area2D" parent="GravityCenter"]
+priority = 1.0
+space_override = 3
+gravity_point = true
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+
+[node name="Circle" type="CollisionShape2D" parent="GravityCenter/Null"]
+shape = SubResource( 2 )
