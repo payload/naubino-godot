@@ -2,9 +2,21 @@ class_name Naub
 extends RigidBody2D
 
 
+var active = false
 var follow_mouse = false
 var mouse_hovering = false
 export(Array) var linked_naubs
+
+
+func set_active(active = true):
+	self.active = active
+
+
+func follow_position(global: Vector2, speed: float):
+	var v = global - global_position
+	var d = v.length_squared()
+	var n = v.normalized()
+	linear_velocity = n * clamp(d, 0, speed)
 
 
 func pop_away():
@@ -22,17 +34,16 @@ func _ready():
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if mouse_hovering and Input.is_action_just_pressed("click"):
+			active = true
 			follow_mouse = true
 		elif follow_mouse and Input.is_action_just_released("click"):
+			active = false
 			follow_mouse = false
 
 
 func _physics_process(delta):
 	if follow_mouse:
-		var v = get_global_mouse_position() - global_position
-		var d = v.length_squared()
-		var n = v.normalized()
-		linear_velocity = n * clamp(d, 0, 5000)
+		follow_position(get_global_mouse_position(), 1000)
 
 
 func _enter_tree():
@@ -55,5 +66,5 @@ func _on_RigidBody2D_mouse_exited():
 
 
 func _on_RigidBody2D_body_entered(body: CollisionObject2D):
-	if follow_mouse and body.is_in_group("Naub") and not linked_naubs.has(body):
+	if active and body.is_in_group("Naub") and not linked_naubs.has(body):
 		Global.emit_signal("naub_naub_contact", self, body)

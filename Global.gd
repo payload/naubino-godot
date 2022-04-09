@@ -19,15 +19,16 @@ func on_naub_naub_contact(active_naub: Naub, other_naub: Naub):
 	var cycle = find_cycle(active_naub, other_naub)
 	if cycle:
 		for c in cycle:
+			# colors for debugging, when you see red, something is wrong
 			if c.modulate == Color.green:
 				c.modulate = Color.red
 			else:
 				c.modulate = Color.green
-				c.pop_away()
+			c.pop_away()
 
 func are_neighbors(naub_a, naub_b):
 	for naub_x in naub_a.linked_naubs:
-		if naub_x.linked_naubs.has(naub_b):
+		if naub_x == naub_b or naub_x.linked_naubs.has(naub_b):
 			return true
 	return false
 
