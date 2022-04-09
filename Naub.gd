@@ -27,6 +27,10 @@ func pop_away():
 	tween.connect("tween_all_completed", self, "free")
 
 
+func no_links():
+	return linked_naubs.empty()
+
+
 func _ready():
 	linked_naubs = []
 

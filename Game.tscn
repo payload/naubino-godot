@@ -14,9 +14,10 @@ radius = 50.0
 script = ExtResource( 2 )
 
 [node name="Naub1" parent="." instance=ExtResource( 1 )]
-modulate = Color( 0.831373, 0.403922, 0.403922, 1 )
+modulate = Color( 1, 0, 0, 1 )
 
 [node name="Naub2" parent="." instance=ExtResource( 1 )]
+modulate = Color( 0, 1, 1, 1 )
 position = Vector2( 207, 101 )
 
 [node name="Camera2D" type="Camera2D" parent="."]

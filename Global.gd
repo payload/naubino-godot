@@ -10,7 +10,9 @@ func _ready():
 	connect("naub_naub_contact", self, "on_naub_naub_contact")
 
 func on_naub_naub_contact(active_naub: Naub, other_naub: Naub):
-	if  are_neighbors(active_naub, other_naub): return
+	if are_neighbors(active_naub, other_naub): return
+	if not (active_naub.modulate == other_naub.modulate or active_naub.no_links() or other_naub.no_links()): return
+	
 	active_naub.linked_naubs.append(other_naub)
 	other_naub.linked_naubs.append(active_naub)	
 	var link: NaubLink = NaubLinkScene.instance()

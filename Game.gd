@@ -13,6 +13,14 @@ func _unhandled_input(event):
 		naub1.global_position = pos + off
 		naub2.global_position = pos - off
 		
+		naub1.modulate = get_random_color()
+		naub2.modulate = get_random_color()
+		
 		add_child(naub1)
 		add_child(naub2)
 		Global.emit_signal("naub_naub_contact", naub1, naub2)
+
+
+func get_random_color() -> Color:
+	var colors = [Color.red, Color.green, Color.blue, Color.aqua, Color.yellow, Color.fuchsia]
+	return colors[randi() % len(colors)]
