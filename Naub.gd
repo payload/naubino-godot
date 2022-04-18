@@ -67,7 +67,6 @@ func _enter_tree():
 
 
 func _exit_tree():
-	print_debug("exit ", self)
 	linked_naubs.clear()
 	var links = self.links
 	self.links = []
