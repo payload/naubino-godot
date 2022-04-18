@@ -24,6 +24,8 @@ func _physics_process(delta):
 				if is_good_target(naub):
 					target_naub = naub
 					active_naub.set_active()
+					yield(get_tree().create_timer(4), "timeout")
+					target_naub = null
 					return
 		return
 	
