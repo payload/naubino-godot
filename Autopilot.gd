@@ -1,11 +1,15 @@
 extends Node
 
 
+export(bool) var enabled = true
+
+
 var active_naub: Naub = null
 var target_naub: Naub = null
 
 
 func _physics_process(delta):
+	if not enabled: return
 	if not active_naub or not target_naub:
 		var naubs = get_tree().get_nodes_in_group("Naub")
 		if len(naubs) < 2: return
@@ -27,4 +31,4 @@ func _physics_process(delta):
 
 
 func is_good_target(naub: Naub):
-	return  naub.linked_naubs.empty() or (active_naub.modulate == naub.modulate and not Global.are_neighbors(active_naub, naub))
+	return is_instance_valid(naub) and naub.linked_naubs.empty() or (active_naub.modulate == naub.modulate and not Global.are_neighbors(active_naub, naub))

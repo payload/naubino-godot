@@ -1,14 +1,15 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Naub.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Game.gd" type="Script" id=2]
 [ext_resource path="res://Autopilot.gd" type="Script" id=3]
+[ext_resource path="res://NaubinoRules.gd" type="Script" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 1000, 1000 )
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 50.0
+radius = 100.0
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 2 )
@@ -48,3 +49,12 @@ shape = SubResource( 2 )
 
 [node name="Autopilot" type="Node" parent="."]
 script = ExtResource( 3 )
+
+[node name="Autopilot2" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Autopilot3" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="NaubinoRules" type="Node" parent="."]
+script = ExtResource( 4 )

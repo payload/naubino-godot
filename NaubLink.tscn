@@ -2,18 +2,21 @@
 
 [ext_resource path="res://NaubLink.gd" type="Script" id=1]
 
-[node name="Node2D" type="Node2D"]
-z_index = -5
-script = ExtResource( 1 )
-
-[node name="DampedSpringJoint2D" type="DampedSpringJoint2D" parent="."]
-bias = 0.9
+[node name="Link" type="DampedSpringJoint2D"]
 disable_collision = false
 length = 40.0
 rest_length = 40.0
-stiffness = 64.0
-damping = 0.16
+stiffness = 30.0
+script = ExtResource( 1 )
 
-[node name="Line2D" type="Line2D" parent="."]
-points = PoolVector2Array( 0, 0, 10, 0 )
+[node name="black" type="Line2D" parent="."]
+z_index = -2
+z_as_relative = false
+points = PoolVector2Array( 0, 0, 0, 40 )
 default_color = Color( 0, 0, 0, 1 )
+
+[node name="red" type="Line2D" parent="."]
+visible = false
+points = PoolVector2Array( 0, 0, 0, 40 )
+width = 1.0
+default_color = Color( 1, 0, 0, 1 )

@@ -5,7 +5,9 @@ extends RigidBody2D
 var active = false
 var follow_mouse = false
 var mouse_hovering = false
-export(Array) var linked_naubs
+export(Array) var linked_naubs: Array
+export(Array) var links: Array
+var radius = 10
 
 
 func set_active(active = true):
@@ -27,12 +29,22 @@ func pop_away():
 	tween.connect("tween_all_completed", self, "free")
 
 
+func merge_with_and_free_self(active_naub: Naub):
+	for naub in linked_naubs:
+		Global.link_two_naubs_together(active_naub, naub)
+	for link in links:
+		link.free()
+	queue_free()
+
+
 func no_links():
 	return linked_naubs.empty()
 
 
 func _ready():
 	linked_naubs = []
+	links = []
+	$CollisionShape2D.shape.radius = radius
 
 
 func _unhandled_input(event):
@@ -55,10 +67,12 @@ func _enter_tree():
 
 
 func _exit_tree():
-	for naub in linked_naubs:
-		if is_instance_valid(naub):
-			var index = naub.linked_naubs.find(self)
-			naub.linked_naubs.remove(index)
+	print_debug("exit ", self)
+	linked_naubs.clear()
+	var links = self.links
+	self.links = []
+	for link in links:
+		link.free()
 
 
 func _on_RigidBody2D_mouse_entered():

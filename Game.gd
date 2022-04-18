@@ -7,9 +7,10 @@ func _unhandled_input(event):
 		var naub1: Naub = NaubScene.instance()
 		var naub2: Naub = NaubScene.instance()
 		
+		var radius_sum = naub1.radius + naub2.radius
 		var r = get_viewport_rect().size.x * 0.2
 		var pos = Vector2(r * sqrt(randf()), 0).rotated(TAU * randf())
-		var off = Vector2(20, 0).rotated(TAU * randf())
+		var off = Vector2(radius_sum, 0).rotated(TAU * randf())
 		naub1.global_position = pos + off
 		naub2.global_position = pos - off
 		
