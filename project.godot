@@ -37,6 +37,7 @@ Global="*res://Global.gd"
 [global]
 
 clear=false
+camera=false
 
 [input]
 

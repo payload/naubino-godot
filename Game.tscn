@@ -1,6 +1,5 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Naub.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Game.gd" type="Script" id=2]
 [ext_resource path="res://Autopilot.gd" type="Script" id=3]
 [ext_resource path="res://NaubinoRules.gd" type="Script" id=4]
@@ -12,17 +11,8 @@ extents = Vector2( 10000, 10000 )
 radius = 100.0
 
 [node name="Node2D" type="Node2D"]
+position = Vector2( 512, 300 )
 script = ExtResource( 2 )
-
-[node name="Naub1" parent="." instance=ExtResource( 1 )]
-modulate = Color( 1, 0, 0, 1 )
-
-[node name="Naub2" parent="." instance=ExtResource( 1 )]
-modulate = Color( 0, 1, 1, 1 )
-position = Vector2( 207, 101 )
-
-[node name="Camera2D" type="Camera2D" parent="."]
-current = true
 
 [node name="GravityCenter" type="Node2D" parent="."]
 
@@ -54,11 +44,18 @@ enabled = false
 [node name="NaubinoRules" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="Label" type="Label" parent="."]
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enable = true
+
+[node name="Label" type="Label" parent="CanvasLayer"]
 modulate = Color( 0, 0, 0, 1 )
+anchor_left = 0.5
+anchor_right = 0.5
 margin_left = -38.0
-margin_top = -289.0
+margin_top = 15.0
 margin_right = 38.0
-margin_bottom = -275.0
+margin_bottom = 14.0
 text = "press space"
 align = 1
