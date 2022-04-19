@@ -7,7 +7,7 @@ var follow_mouse = false
 var mouse_hovering = false
 export(Array) var linked_naubs: Array
 export(Array) var links: Array
-var radius = 10
+var radius = 17
 
 
 func set_active(active = true):
@@ -45,6 +45,8 @@ func _ready():
 	linked_naubs = []
 	links = []
 	$CollisionShape2D.shape.radius = radius
+	$MeshInstance2D.mesh.radius = radius
+	$MeshInstance2D.mesh.height = radius * 2
 
 
 func _unhandled_input(event):

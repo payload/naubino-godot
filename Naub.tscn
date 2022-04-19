@@ -3,12 +3,14 @@
 [ext_resource path="res://Naub.gd" type="Script" id=1]
 
 [sub_resource type="CircleShape2D" id=1]
+radius = 20.0
 
 [sub_resource type="SphereMesh" id=3]
-radius = 10.0
-height = 20.0
+radius = 20.0
+height = 40.0
 
 [node name="Naub" type="RigidBody2D" groups=["Naub"]]
+modulate = Color( 0.235294, 0.196078, 0.196078, 1 )
 position = Vector2( 155, 101 )
 input_pickable = true
 contacts_reported = 1

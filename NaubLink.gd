@@ -11,11 +11,19 @@ func attach_to_naubs(active_naub: Naub, other_naub: Naub):
 	var pos_a = active_naub.global_position
 	var pos_b = other_naub.global_position
 	var distance = pos_a.distance_to(pos_b)
-	wanted_distance = radius_sum * 2
+	wanted_distance = radius_sum
 	length = distance
+	rest_length = wanted_distance * 1.7
+	
+	$black.set_point_position(1, Vector2(0, length))
+	$red.set_point_position(1, Vector2(0, length))
+	
 	active_naub.get_parent().add_child(self)
+	active_naub.linked_naubs.append(other_naub)
+	other_naub.linked_naubs.append(active_naub)	
 	active_naub.links.append(self)
 	other_naub.links.append(self)
+	
 	global_position = active_naub.global_position
 	rotation = pos_a.angle_to_point(pos_b) + 0.25 * TAU
 	node_a = active_naub.get_path()
@@ -30,6 +38,7 @@ func _process(delta):
 	line.set_point_position(0, to_local(a.global_position))
 	line.set_point_position(1, to_local(b.global_position))
 	var d = clamp(wanted_distance / distance, 0.5, 1)
+	line_width = min(a.radius, b.radius) / 2
 	line.width = line_width * d * min(a.scale.x, b.scale.x)
 
 func _exit_tree():
