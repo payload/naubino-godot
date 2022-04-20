@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
+[ext_resource path="res://GameUI.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Game.gd" type="Script" id=2]
 [ext_resource path="res://Autopilot.gd" type="Script" id=3]
 [ext_resource path="res://NaubinoRules.gd" type="Script" id=4]
+
+[sub_resource type="SphereMesh" id=3]
+radius = 200.0
+height = 400.0
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10000, 10000 )
@@ -10,11 +15,16 @@ extents = Vector2( 10000, 10000 )
 [sub_resource type="CircleShape2D" id=2]
 radius = 100.0
 
-[node name="Node2D" type="Node2D"]
+[node name="Game" type="Node2D"]
 position = Vector2( 512, 300 )
 script = ExtResource( 2 )
 
 [node name="GravityCenter" type="Node2D" parent="."]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="GravityCenter"]
+modulate = Color( 0.980392, 0.980392, 0.980392, 1 )
+z_index = -1
+mesh = SubResource( 3 )
 
 [node name="Pull" type="Area2D" parent="GravityCenter"]
 space_override = 1
@@ -37,6 +47,9 @@ gravity = 0.0
 [node name="Circle" type="CollisionShape2D" parent="GravityCenter/Null"]
 shape = SubResource( 2 )
 
+[node name="Camera2D" type="Camera2D" parent="GravityCenter"]
+current = true
+
 [node name="Autopilot" type="Node" parent="."]
 script = ExtResource( 3 )
 enabled = false
@@ -44,18 +57,4 @@ enabled = false
 [node name="NaubinoRules" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-follow_viewport_enable = true
-
-[node name="Label" type="Label" parent="CanvasLayer"]
-modulate = Color( 0, 0, 0, 1 )
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -38.0
-margin_top = 15.0
-margin_right = 38.0
-margin_bottom = 14.0
-text = "press space"
-align = 1
+[node name="GameUI" parent="." instance=ExtResource( 1 )]
