@@ -60,6 +60,12 @@ script = ExtResource( 4 )
 
 [node name="GameUI" parent="." instance=ExtResource( 1 )]
 
+[node name="AutospawnTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
 [connection signal="clear" from="GameUI" to="." method="clear"]
 [connection signal="spawn_some" from="GameUI" to="." method="spawn_some"]
 [connection signal="toggle_autopilot" from="GameUI" to="." method="toggle_autopilot"]
+[connection signal="toggle_autospawn" from="GameUI" to="." method="toggle_autospawn"]
+[connection signal="timeout" from="AutospawnTimer" to="." method="_on_AutospawnTimer_timeout"]

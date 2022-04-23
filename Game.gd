@@ -32,7 +32,18 @@ func toggle_autopilot(enabled):
 	$Autopilot.enabled = enabled
 
 
+func toggle_autospawn(enabled):
+	autospawn_enabled = enabled
+
+
 func get_random_color() -> Color:
 	var colors = [Color.red, Color.green, Color.blue, Color.aqua, Color.yellow, Color.fuchsia]
 	colors = [Color8(229, 53, 23), Color8(151, 190, 13), Color8(0, 139, 208), Color8(255, 204, 0), Color8(226, 0, 122), Color8(100, 31, 128), Color8(41, 14, 3)]
 	return colors[randi() % len(colors)]
+
+
+var autospawn_enabled = false
+
+func _on_AutospawnTimer_timeout():
+	if autospawn_enabled:
+		spawn_some()
