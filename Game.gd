@@ -23,6 +23,11 @@ func spawn_some():
 	Global.emit_signal("naub_naub_contact", naub1, naub2)
 
 
+func clear():
+	for naub in get_tree().get_nodes_in_group("Naub"):
+		(naub as Node).queue_free()
+
+
 func get_random_color() -> Color:
 	var colors = [Color.red, Color.green, Color.blue, Color.aqua, Color.yellow, Color.fuchsia]
 	colors = [Color8(229, 53, 23), Color8(151, 190, 13), Color8(0, 139, 208), Color8(255, 204, 0), Color8(226, 0, 122), Color8(100, 31, 128), Color8(41, 14, 3)]

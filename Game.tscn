@@ -60,4 +60,5 @@ script = ExtResource( 4 )
 
 [node name="GameUI" parent="." instance=ExtResource( 1 )]
 
+[connection signal="clear" from="GameUI" to="." method="clear"]
 [connection signal="spawn_some" from="GameUI" to="." method="spawn_some"]
