@@ -40,6 +40,10 @@ MainUi="*res://GameUI.tscn"
 clear=false
 camera=false
 
+[gui]
+
+theme/custom="res://naubino.theme"
+
 [input]
 
 click={

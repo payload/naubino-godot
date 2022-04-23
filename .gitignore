@@ -1,3 +1,7 @@
+# project specific ignores
+export-*/
+segoe-ui-emoji/*
+
 # Godot-specific ignores
 .import/
 export.cfg
