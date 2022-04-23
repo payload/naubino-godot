@@ -62,3 +62,4 @@ script = ExtResource( 4 )
 
 [connection signal="clear" from="GameUI" to="." method="clear"]
 [connection signal="spawn_some" from="GameUI" to="." method="spawn_some"]
+[connection signal="toggle_autopilot" from="GameUI" to="." method="toggle_autopilot"]
