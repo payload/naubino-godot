@@ -2,6 +2,7 @@ extends Node2D
 
 var NaubScene = preload("res://Naub.tscn")
 
+
 func spawn_some():
 	# get_tree().paused = not get_tree().paused
 	
@@ -47,3 +48,31 @@ var autospawn_enabled = false
 func _on_AutospawnTimer_timeout():
 	if autospawn_enabled:
 		spawn_some()
+
+
+func _unhandled_input(event):
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		event = make_input_local(event)
+		event.position = to_global(event.position)
+	
+	if event is InputEventScreenTouch:
+		Global.touches[event.index] = {
+			index = event.index,
+			position = event.position,
+			pressed = event.pressed,
+			speed = Vector2.ZERO,
+		}
+	elif event is InputEventScreenDrag:
+		var touch = Global.touches[event.index]
+		touch.position = event.position
+		touch.speed = event.speed
+	
+	if event is InputEventScreenTouch and event.pressed:		
+		var space = get_world_2d().direct_space_state
+		var hits = space.intersect_point(event.position)
+		for hit in hits:
+			if hit.collider is Naub:
+				(hit.collider as Naub).follow_touch = event.index
+		
+
+

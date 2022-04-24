@@ -25,6 +25,4 @@ shape = SubResource( 1 )
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
 mesh = SubResource( 3 )
 
-[connection signal="body_entered" from="." to="." method="_on_RigidBody2D_body_entered"]
-[connection signal="mouse_entered" from="." to="." method="_on_RigidBody2D_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_RigidBody2D_mouse_exited"]
+[connection signal="body_entered" from="." to="." method="_on_Naub_body_entered"]

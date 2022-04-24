@@ -49,7 +49,6 @@ visible = false
 shape = SubResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="GravityCenter"]
-current = true
 
 [node name="Autopilot" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -63,6 +62,10 @@ script = ExtResource( 4 )
 [node name="AutospawnTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+smoothing_enabled = true
 
 [connection signal="clear" from="GameUI" to="." method="clear"]
 [connection signal="spawn_some" from="GameUI" to="." method="spawn_some"]
