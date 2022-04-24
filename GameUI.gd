@@ -7,14 +7,15 @@ signal spawn_some()
 signal clear()
 
 func _ready():
-	$VBoxContainer/AutospawnButton.connect("toggled", self, "_on_toggled", ["toggle_autospawn"])
-	$VBoxContainer/EmojiButton.connect("toggled", self, "_on_toggled", ["toggle_emojis"])
-	$VBoxContainer/AutopilotButton.connect("toggled", self, "_on_toggled", ["toggle_autopilot"])
-	$VBoxContainer/SpawnButton.connect("pressed", self, "_on_pressed", ["spawn_some"])
-	$VBoxContainer/ClearButton.connect("pressed", self, "_on_pressed", ["clear"])
+	var _x
+	_x = $VBoxContainer/AutospawnButton.connect("toggled", self, "emit_toggle_autospawn")
+	_x = $VBoxContainer/EmojiButton.connect("toggled", self, "emit_toggle_emojis")
+	_x = $VBoxContainer/AutopilotButton.connect("toggled", self, "emit_toggle_autopilot")
+	_x = $VBoxContainer/SpawnButton.connect("pressed", self, "emit_spawn_some")
+	_x = $VBoxContainer/ClearButton.connect("pressed", self, "emit_clear")
 
-func _on_toggled(enabled: bool, my_signal: String):
-	emit_signal(my_signal, enabled)
-
-func _on_pressed(my_signal: String):
-	emit_signal(my_signal)
+func emit_toggle_autospawn(enabled): emit_signal("toggle_autospawn", enabled)
+func emit_toggle_emojis(enabled): emit_signal("toggle_emojis", enabled)
+func emit_toggle_autopilot(enabled): emit_signal("toggle_autopilot", enabled)
+func emit_spawn_some(): emit_signal("spawn_some")
+func emit_clear(): emit_signal("clear")

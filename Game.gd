@@ -20,7 +20,7 @@ func spawn_some():
 	
 	add_child(naub1)
 	add_child(naub2)
-	Global.emit_signal("naub_naub_contact", naub1, naub2)
+	Global.emit_naub_naub_contact(naub1, naub2)
 
 
 func clear():

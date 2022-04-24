@@ -10,8 +10,8 @@ export(Array) var links: Array
 var radius = 17
 
 
-func set_active(active = true):
-	self.active = active
+func set_active(is_active = true):
+	active = is_active
 
 
 func follow_position(global: Vector2, speed: float):
@@ -26,7 +26,7 @@ func pop_away():
 	tween.interpolate_property(self, "scale", self.scale, Vector2.ZERO, 0.5, Tween.TRANS_EXPO, Tween.EASE_OUT)
 	add_child(tween)
 	tween.start()
-	tween.connect("tween_all_completed", self, "free")
+	tween.connect("tween_all_completed", self, "queue_free")
 
 
 func merge_with_and_free_self(active_naub: Naub):
@@ -49,30 +49,29 @@ func _ready():
 	$MeshInstance2D.mesh.height = radius * 2
 
 
-func _unhandled_input(event):
-	if event is InputEventMouseButton:
-		if mouse_hovering and Input.is_action_just_pressed("click"):
-			active = true
-			follow_mouse = true
-		elif follow_mouse and Input.is_action_just_released("click"):
-			active = false
-			follow_mouse = false
+func _unhandled_input(_event):
+	if mouse_hovering and Input.is_action_just_pressed("click"):
+		active = true
+		follow_mouse = true
+	elif follow_mouse and Input.is_action_just_released("click"):
+		active = false
+		follow_mouse = false
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if follow_mouse:
 		follow_position(get_global_mouse_position(), 1000)
 
 
 func _enter_tree():
-	Global.emit_signal("naub_enter_tree", self)
+	Global.emit_naub_enter_tree(self)
 
 
 func _exit_tree():
 	linked_naubs.clear()
-	var links = self.links
+	var last_links = self.links
 	self.links = []
-	for link in links:
+	for link in last_links:
 		link.free()
 
 

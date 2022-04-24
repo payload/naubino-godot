@@ -8,7 +8,7 @@ var active_naub: Naub = null
 var target_naub: Naub = null
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not enabled: return
 	if not active_naub or not target_naub:
 		active_naub = null

@@ -29,7 +29,7 @@ func attach_to_naubs(active_naub: Naub, other_naub: Naub):
 	node_a = active_naub.get_path()
 	node_b = other_naub.get_path()
 
-func _process(delta):
+func _process(_delta):
 	var a = get_node(node_a) as Naub
 	var b = get_node(node_b) as Naub
 	if not is_instance_valid(a) or not is_instance_valid(b):
