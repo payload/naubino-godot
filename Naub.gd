@@ -7,9 +7,25 @@ export(Array) var links: Array
 var radius = 17
 var follow_touch = null
 
+var plops = [
+	preload("res://sound/b0.ogg"),
+	preload("res://sound/b1.ogg"),
+	preload("res://sound/b2.ogg"),
+	preload("res://sound/b3.ogg"),
+	preload("res://sound/b4.ogg"),
+	preload("res://sound/b5.ogg"),
+	preload("res://sound/b6.ogg"),
+	preload("res://sound/b7.ogg"),
+	preload("res://sound/b8.ogg"),
+]
+
 
 func is_active():
 	return follow_touch != null
+
+
+func is_on_screen():
+	return position.length() < 400
 
 
 func pop_away():
@@ -18,18 +34,31 @@ func pop_away():
 	add_child(tween)
 	tween.start()
 	tween.connect("tween_all_completed", self, "queue_free")
+	_play_plop()
 
 
 func merge_with_and_free_self(active_naub: Naub):
+	_play_plop()
+	$AudioStreamPlayer2D.connect("finished", self, "queue_free")
+	get_parent().add_child($AudioStreamPlayer2D)
 	for naub in linked_naubs:
 		Global.link_two_naubs_together(active_naub, naub)
 	for link in links:
 		link.free()
-	queue_free()
+	visible = false
+	set_physics_process(false)
+	set_process(false)
+	remove_from_group("Naub")
 
 
 func no_links():
 	return linked_naubs.empty()
+
+
+func _play_plop():
+	$AudioStreamPlayer2D.stream = plops[randi() % len(plops)]
+	$AudioStreamPlayer2D.stream.loop = false
+	$AudioStreamPlayer2D.play()
 
 
 func _ready():

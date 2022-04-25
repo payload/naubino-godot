@@ -24,7 +24,13 @@ func _ready():
 
 
 func _physics_process(_delta):
-	if not enabled: return
+	if not enabled:
+		if is_instance_valid(active_naub):
+			active_naub.follow_touch = null
+			active_naub = null
+			target_naub = null
+			Global.touches[_touch_id].pressed = false
+		return
 	if not active_naub or not target_naub:
 		active_naub = null
 		target_naub = null
@@ -32,7 +38,7 @@ func _physics_process(_delta):
 		naubs.shuffle()
 		while len(naubs) >= 2:
 			active_naub = naubs.pop_back() as Naub
-			if active_naub.is_active():
+			if active_naub.is_active() or active_naub.is_on_screen():
 				continue
 		if active_naub:
 			for naub in naubs:
@@ -62,6 +68,7 @@ func _physics_process(_delta):
 func is_good_target(naub: Naub):
 	return is_instance_valid(naub) \
 		and not naub.is_active() \
+		and naub.is_on_screen() \
 		and (naub.linked_naubs.empty() \
 			or (active_naub.modulate == naub.modulate
 				and not Global.are_neighbors(active_naub, naub)
