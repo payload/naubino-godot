@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Animal Style - DMG Guitar.mp3-9da3d47a12605f71ef069a7da4b40125.mp3str"
+
+[deps]
+
+source_file="res://sound/Animal Style - DMG Guitar.mp3"
+dest_files=[ "res://.import/Animal Style - DMG Guitar.mp3-9da3d47a12605f71ef069a7da4b40125.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
