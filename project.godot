@@ -9,15 +9,15 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "RigidBody2D",
+"base": "Reference",
 "class": "Naub",
 "language": "GDScript",
-"path": "res://Naub.gd"
+"path": "res://ingame/Naub.gd"
 }, {
-"base": "DampedSpringJoint2D",
+"base": "Reference",
 "class": "NaubLink",
 "language": "GDScript",
-"path": "res://NaubLink.gd"
+"path": "res://ingame/NaubLink.gd"
 } ]
 _global_script_class_icons={
 "Naub": "",
@@ -26,14 +26,13 @@ _global_script_class_icons={
 
 [application]
 
-config/name="godot-naubino"
-run/main_scene="res://Game.tscn"
+config/name="naubino-godot"
+run/main_scene="res://screen/ChooseGame.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Global="*res://Global.gd"
-MainUi="*res://GameUI.tscn"
 
 [gui]
 

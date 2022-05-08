@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://segoe-ui-emoji/anatomical-heart.png" type="Texture" id=1]
-[ext_resource path="res://ModulateButton.gd" type="Script" id=2]
+[ext_resource path="res://ui/ModulateButton.gd" type="Script" id=2]
 
 [node name="ModulateButton" type="TextureButton"]
 margin_right = 72.0

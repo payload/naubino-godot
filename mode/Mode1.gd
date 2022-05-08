@@ -1,6 +1,6 @@
 extends Node2D
 
-var NaubScene = preload("res://Naub.tscn")
+var NaubScene = preload("res://ingame/Naub.tscn")
 
 
 func spawn_some():

@@ -20,7 +20,7 @@ func are_neighbors(naub_a, naub_b):
 	return false
 
 
-var NaubLinkScene = preload("res://NaubLink.tscn")
+var NaubLinkScene = preload("res://ingame/NaubLink.tscn")
 func link_two_naubs_together(active_naub: Naub, other_naub: Naub):
 	var link: NaubLink = NaubLinkScene.instance()
 	link.attach_to_naubs(active_naub, other_naub)
