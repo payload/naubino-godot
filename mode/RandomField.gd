@@ -15,18 +15,38 @@ var palette1 = {
 }
 
 
+func pick(arr):
+	return arr[randi() % len(arr)]
+
+# pick a random color
+func r():
+	return pick("rrggbby")
+
+func join(arr: Array, with: String):
+	var ret = ""
+	for i in len(arr) - 1:
+		ret += arr[i] + with
+	ret += arr[-1]
+	return ret
+
+
+func chain(specs: Array):
+	return join(specs, ".")
+
+
+func random_chain():
+	return chain([r(), r(), r()])
+
+
 func _ready():
 	randomize()
-	spawn_some_chain()
-
-func spawn_some_chain():
-	var naub_distance = Global.NAUB_LINK_WANTED_DISTANCE
-	var normal = clock(randi())
-	var tangent = normal + PI/2
-	var init_pos = polar(200, normal)
-	var node_offset = polar(naub_distance, tangent)
-	var chain_offset = polar(naub_distance, normal)
-	spawn_chains("r.g.b.1:black.y.p.l", init_pos, node_offset, chain_offset)
+	spawn_chains("r.g", Vector2.ZERO, 0)
+	for layer in range(1, 6):
+		var n = layer * 3
+		for angle in n:
+			angle = TAU * angle / n
+			var pos = polar(100 * layer, angle)
+			spawn_chains(random_chain(), pos, angle - PI/2)
 
 
 func polar(length, angle):
@@ -70,7 +90,12 @@ func clock(hour: int):
 #
 # This way the green node is position in the second chain.
 #
-func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
+func spawn_chains(def: String, pos: Vector2, angle: float):
+	var node_offset = polar(Global.NAUB_LINK_WANTED_DISTANCE, angle)
+	var chain_offset = polar(Global.NAUB_LINK_WANTED_DISTANCE, angle - PI/2)
+	_spawn_chains(def, pos, node_offset, chain_offset)
+
+func _spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
 	var named_nodes = {}
 	var node_chains = []
 	
@@ -128,7 +153,7 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 	for chain_index in len(node_chains):
 		var chain = node_chains[chain_index]
 		var chain_pos = init_pos + chain_offset * (chain_index - len(node_chains) / 2)
-		var mid = len(chain) / 2
+		var mid = (len(chain) - 1) / 2.0
 		for index in len(chain):
 			var node = chain[index]
 			var factor = index - mid
@@ -142,10 +167,6 @@ func link_together(a: Naub, b: Naub):
 
 
 func _unhandled_input(event):
-	if event is InputEventKey:
-		if Input.is_key_pressed(KEY_SPACE):
-			spawn_some_chain()
-	
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		event = make_input_local(event)
 		event.position = to_global(event.position)
