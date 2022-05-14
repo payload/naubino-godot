@@ -9,12 +9,12 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Reference",
+"base": "RigidBody2D",
 "class": "Naub",
 "language": "GDScript",
 "path": "res://ingame/Naub.gd"
 }, {
-"base": "Reference",
+"base": "DampedSpringJoint2D",
 "class": "NaubLink",
 "language": "GDScript",
 "path": "res://ingame/NaubLink.gd"

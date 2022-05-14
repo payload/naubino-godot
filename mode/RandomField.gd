@@ -1,15 +1,15 @@
 extends Node2D
 
 
-var NaubScene = preload("res://Naub.tscn")
+var NaubScene = preload("res://ingame/Naub.tscn")
 
 
 var palette1 = {
 	"r": Color8(229, 53, 23),
 	"g": Color8(151, 190, 13), 
 	"b": Color8(0, 139, 208),
-	"a": Color8(255, 204, 0),
-	"y": Color8(226, 0, 122),
+	"y": Color8(255, 204, 0),
+	"p": Color8(226, 0, 122),
 	"l": Color8(100, 31, 128),
 	"black": Color8(41, 14, 3),
 }
@@ -23,30 +23,32 @@ func get_random_color() -> Color:
 
 
 func _ready():
-	var init_pos = polar(300, clock(randi()))
-	var a = clock(randi())
-	var node_offset = polar(60, a)
-	var chain_offset = polar(60, a + PI/2)
-	spawn_chains("r.g.b.a.y.l.black", init_pos, node_offset, chain_offset)
+	randomize()
+	spawn_some_chain()
+
+func spawn_some_chain():
+	var normal = clock(randi())
+	var tangent = normal + PI/2
+	var init_pos = polar(200, normal)
+	var node_offset = polar(60, tangent)
+	var chain_offset = polar(60, normal)
+	spawn_chains("r.g.b.1:black.y.p.l 1.r 1.r", init_pos, node_offset, chain_offset)
 
 
 func polar(length, angle):
-	print(angle)
 	return Vector2(length, 0).rotated(angle)
 
 
 func clock(hour: int):
-	return TAU * (hour % 12) / 12
+	return TAU * ((hour % 12) / 12.0)
 
 
 func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
 	var named_nodes = {}
 	var node_chains = []
-	var chain_pos = init_pos
 	
 	var chains = def.split(" ", false)
 	for chain in chains:
-		var pos = chain_pos
 		var nodes = []
 		var current_node = null
 		var descs = chain.split(".", false)
@@ -81,15 +83,22 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 				next_node.modulate = color
 				add_child(next_node)
 				nodes.push_back(next_node)
-				next_node.position = pos
 				if new_name:
 					named_nodes[new_name] = next_node
 			if current_node:
 				link_together(current_node, next_node)
 			current_node = next_node
-			pos += node_offset
 		node_chains.push_back(nodes)
-		chain_pos += chain_offset
+	
+	for chain_index in len(node_chains):
+		var chain = node_chains[chain_index]
+		var chain_pos = init_pos + chain_offset * (chain_index - len(node_chains) / 2)
+		var mid = len(chain) / 2
+		for index in len(chain):
+			var node = chain[index]
+			var factor = index - mid
+			node.position = chain_pos + node_offset * factor
+	
 	return node_chains
 
 
@@ -117,6 +126,10 @@ func spawn_some(distance: float):
 
 
 func _unhandled_input(event):
+	if event is InputEventKey:
+		if Input.is_key_pressed(KEY_SPACE):
+			spawn_some_chain()
+	
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		event = make_input_local(event)
 		event.position = to_global(event.position)

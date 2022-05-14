@@ -64,7 +64,7 @@ func _play_plop():
 func _ready():
 	linked_naubs = []
 	links = []
-	$CollisionShape2D.shape.radius = radius
+	$CollisionShape2D.shape.radius = radius + 2
 	$MeshInstance2D.mesh.radius = radius
 	$MeshInstance2D.mesh.height = radius * 2
 

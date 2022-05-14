@@ -37,7 +37,7 @@ func _process(_delta):
 	var distance = a.global_position.distance_to(b.global_position)
 	line.set_point_position(0, to_local(a.global_position))
 	line.set_point_position(1, to_local(b.global_position))
-	var d = clamp(wanted_distance / distance, 0.5, 1)
+	var d = clamp(wanted_distance / distance, 0.5, 1) if distance != 0 else 1
 	line_width = min(a.radius, b.radius) / 2
 	line.width = line_width * d * min(a.scale.x, b.scale.x)
 
