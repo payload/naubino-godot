@@ -28,7 +28,7 @@ func attach_to_naubs(active_naub: Naub, other_naub: Naub):
 	node_b = other_naub.get_path()
 
 
-func _physics_process(delta):
+func _process(delta):
 	var a = get_node(node_a) as Naub
 	var b = get_node(node_b) as Naub
 	if not is_instance_valid(a) or not is_instance_valid(b):
@@ -36,7 +36,7 @@ func _physics_process(delta):
 	var distance = a.global_position.distance_to(b.global_position)
 	line.set_point_position(0, to_local(a.global_position))
 	line.set_point_position(1, to_local(b.global_position))
-	var d = clamp(wanted_distance / distance if distance else INF, 0.1, 1.5)
+	var d = clamp(wanted_distance / distance, 0.1, 1.5) if distance else 0
 	line.width = line_width * d * min(a.scale.x, b.scale.x)
 
 

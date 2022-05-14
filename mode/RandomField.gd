@@ -35,7 +35,10 @@ func chain(specs: Array):
 
 
 func random_chain():
-	return chain([r(), r(), r()])
+	if randf() < 0.8:
+		return chain([r(), r(), r()])
+	else:
+		return chain([r(), r()])
 
 
 func _ready():
