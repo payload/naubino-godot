@@ -4,7 +4,7 @@ extends RigidBody2D
 
 export(Array) var linked_naubs: Array
 export(Array) var links: Array
-var radius = 17
+var radius = Global.NAUB_RADIUS
 var follow_touch = null
 
 var plops = [

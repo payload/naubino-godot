@@ -27,12 +27,13 @@ func _ready():
 	spawn_some_chain()
 
 func spawn_some_chain():
+	var naub_distance = Global.NAUB_LINK_WANTED_DISTANCE
 	var normal = clock(randi())
 	var tangent = normal + PI/2
 	var init_pos = polar(200, normal)
-	var node_offset = polar(60, tangent)
-	var chain_offset = polar(60, normal)
-	spawn_chains("1.r r.g.b.1:black.y.p.l 1.r", init_pos, node_offset, chain_offset)
+	var node_offset = polar(naub_distance, tangent)
+	var chain_offset = polar(naub_distance, normal)
+	var chains = spawn_chains("r.g.b.1:black.y.p.l", init_pos, node_offset, chain_offset)
 
 
 func polar(length, angle):
@@ -91,7 +92,6 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 				
 				assert(spec in palette1)
 				color = palette1[spec]
-				(next_node as Naub).mode = RigidBody2D.MODE_STATIC
 				next_node.modulate = color
 				
 			if current_node:

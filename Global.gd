@@ -28,3 +28,8 @@ func link_two_naubs_together(active_naub: Naub, other_naub: Naub):
 
 # index, position, pressed, speed
 var touches: Dictionary = {}
+
+
+var NAUB_RADIUS = 18
+var NAUB_LINK_WANTED_DISTANCE = NAUB_RADIUS * 4
+var NAUB_LINK_LINE_WIDTH = NAUB_RADIUS / 3

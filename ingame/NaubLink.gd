@@ -1,19 +1,17 @@
 class_name NaubLink
 extends DampedSpringJoint2D
 
-export(float) var line_width = 6
+var line_width = Global.NAUB_LINK_LINE_WIDTH
 
 onready var line = $black
-var wanted_distance = 0
+var wanted_distance = Global.NAUB_LINK_WANTED_DISTANCE
 
 func attach_to_naubs(active_naub: Naub, other_naub: Naub):
-	var radius_sum = active_naub.radius + other_naub.radius
 	var pos_a = active_naub.global_position
 	var pos_b = other_naub.global_position
 	var distance = pos_a.distance_to(pos_b)
-	wanted_distance = radius_sum
 	length = distance
-	rest_length = wanted_distance * 1.7
+	rest_length = wanted_distance
 	
 	$black.set_point_position(1, Vector2(0, length))
 	$red.set_point_position(1, Vector2(0, length))
@@ -29,7 +27,8 @@ func attach_to_naubs(active_naub: Naub, other_naub: Naub):
 	node_a = active_naub.get_path()
 	node_b = other_naub.get_path()
 
-func _process(_delta):
+
+func _physics_process(delta):
 	var a = get_node(node_a) as Naub
 	var b = get_node(node_b) as Naub
 	if not is_instance_valid(a) or not is_instance_valid(b):
@@ -37,9 +36,9 @@ func _process(_delta):
 	var distance = a.global_position.distance_to(b.global_position)
 	line.set_point_position(0, to_local(a.global_position))
 	line.set_point_position(1, to_local(b.global_position))
-	var d = clamp(wanted_distance / distance, 0.5, 1) if distance != 0 else 1
-	line_width = min(a.radius, b.radius) / 2
+	var d = clamp(wanted_distance / distance if distance else INF, 0.1, 1.5)
 	line.width = line_width * d * min(a.scale.x, b.scale.x)
+
 
 func _exit_tree():
 	var a = get_node(node_a)
