@@ -97,7 +97,8 @@ func _exit_tree():
 	var last_links = self.links
 	self.links = []
 	for link in last_links:
-		link.free()
+		if is_instance_valid(link):
+			link.free()
 
 
 func _on_Naub_body_entered(body: CollisionObject2D):

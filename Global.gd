@@ -15,7 +15,7 @@ func emit_naub_enter_tree(naub: Naub):
 
 func are_neighbors(naub_a, naub_b):
 	for naub_x in naub_a.linked_naubs:
-		if naub_x == naub_b or naub_x.linked_naubs.has(naub_b):
+		if is_instance_valid(naub_x) and (naub_x == naub_b or naub_x.linked_naubs.has(naub_b)):
 			return true
 	return false
 

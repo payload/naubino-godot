@@ -3,7 +3,7 @@ extends Node2D
 
 func _ready():
 	randomize()
-	spawn_chains("r.g", Vector2.ZERO, 0)
+	spawn_chains("y.y", Vector2.ZERO, 0)
 	for layer in range(1, 6):
 		var n = layer * 3
 		for angle in n:
@@ -76,71 +76,88 @@ func spawn_chains(def: String, pos: Vector2, angle: float):
 	var chain_offset = _polar(Global.NAUB_LINK_WANTED_DISTANCE, angle - PI/2)
 	_spawn_chains(def, pos, node_offset, chain_offset)
 
-func _spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
-	var named_nodes = {}
-	var node_chains = []
-	
-	var chains = def.split(" ", false)
-	for chain in chains:
-		var nodes = []
-		var current_node = null
-		var descs = chain.split(".", false)
-		for desc in descs:
-			desc = desc as String
-			var new_name = null
-			var color = null
-			var spec = null
-			var next_node = null
-			
-			var colon = desc.find(":")
-			if colon > -1:
+func _spawn_chains(def: String, pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
+	var interpreter = ChainsInterpreter.new(self)
+	for chain in def.split(" ", false):
+		for desc in chain.split(".", false):
+			if desc.find(":") > -1:
 				var split = desc.split(":")
 				assert(len(split) == 2)
-				new_name = split[0]
-				assert(new_name)
-				# assert(not (new_name in named_nodes))
-				spec = split[1]
+				interpreter.named_node_with_spec(split[0], split[1])
+			elif desc.is_valid_integer():
+				interpreter.reference_node(desc)
 			else:
-				spec = desc
-				
-			assert(spec)
-			if spec.is_valid_integer():
-				assert(!new_name)
-				if spec in named_nodes:
-					next_node = named_nodes[spec]
-				else:
-					next_node = Global.NaubScene.instance()
-					add_child(next_node)
-					named_nodes[spec] = next_node
-			else:
-				if new_name in named_nodes:
-					next_node = named_nodes[new_name]
-				else:
-					next_node = Global.NaubScene.instance()
-					add_child(next_node)
-					if new_name:
-						named_nodes[new_name] = next_node
-				nodes.push_back(next_node)
-				
-				assert(spec in Global.NAUBINO_PALETTE)
-				color = Global.NAUBINO_PALETTE[spec]
-				next_node.modulate = color
-				
-			if current_node:
-				_link_together(current_node, next_node)
-			current_node = next_node
-		node_chains.push_back(nodes)
+				interpreter.node_with_spec(desc)	
+		interpreter.end_chain()
+	var chains = interpreter.get_chains()
+	_modify_positions_to_centered(chains, pos, node_offset, chain_offset)
+	return chains
+
+
+class ChainsInterpreter:
+	var _named_nodes = {}
+	var _chains = []
+	var _nodes = []
+	var _current_node = null
+	var _parent: Node
+
+	func _init(parent: Node):
+		_parent = parent
+
+	func get_chains():
+		return _chains
+
+	func end_chain():
+		if not _nodes.empty():
+			_chains.push_back(_nodes)
+			_nodes = []
+
+	func named_node_with_spec(name: String, spec: String):
+		assert(name.is_valid_integer() and not spec.is_valid_integer())
+		var node = _get_or_create_named_node(name)
+		_apply_spec(node, spec)
+		_link_and_set_current_node(node)
 	
+	func reference_node(name: String):
+		var node = _get_or_create_named_node(name)
+		_link_and_set_current_node(node)
+	
+	func node_with_spec(spec: String):
+		var node = _spawn_naub()
+		_apply_spec(node, spec)
+		_link_and_set_current_node(node)
+
+	func _get_or_create_named_node(name: String):
+		if not (name in _named_nodes):
+			_named_nodes[name] = _spawn_naub()
+		return _named_nodes[name]
+
+	func _link_and_set_current_node(node: Naub):
+		if _current_node:
+			Global.link_two_naubs_together(_current_node, node)
+		_parent.add_child(node)
+		_current_node = node
+	
+	func _apply_spec(naub: Naub, spec: String):
+		assert(spec in Global.NAUBINO_PALETTE)
+		naub.modulate = Global.NAUBINO_PALETTE[spec]
+	
+	func _spawn_naub():
+		var naub = Global.NaubScene.instance()
+		_parent.add_child(naub)
+		_nodes.push_back(naub)
+		return naub
+
+
+func _modify_positions_to_centered(node_chains: Array, pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
 	for chain_index in len(node_chains):
 		var chain = node_chains[chain_index]
-		var chain_pos = init_pos + chain_offset * (chain_index - len(node_chains) / 2)
+		var chain_pos = pos + chain_offset * (chain_index - len(node_chains) / 2)
 		var mid = (len(chain) - 1) / 2.0
 		for index in len(chain):
 			var node = chain[index]
 			var factor = index - mid
 			node.position = chain_pos + node_offset * factor
-	
-	return node_chains
 
 
 func _link_together(a: Naub, b: Naub):
