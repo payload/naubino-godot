@@ -32,7 +32,7 @@ func spawn_some_chain():
 	var init_pos = polar(200, normal)
 	var node_offset = polar(60, tangent)
 	var chain_offset = polar(60, normal)
-	spawn_chains("r.g.b.1:black.y.p.l 1.r 1.r", init_pos, node_offset, chain_offset)
+	spawn_chains("1.r r.g.b.1:black.y.p.l 1.r", init_pos, node_offset, chain_offset)
 
 
 func polar(length, angle):
@@ -65,7 +65,7 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 				assert(len(split) == 2)
 				new_name = split[0]
 				assert(new_name)
-				assert(not (new_name in named_nodes))
+				# assert(not (new_name in named_nodes))
 				spec = split[1]
 			else:
 				spec = desc
@@ -73,18 +73,27 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 			assert(spec)
 			if spec.is_valid_integer():
 				assert(!new_name)
-				assert(spec in named_nodes)
-				next_node = named_nodes[spec]
+				if spec in named_nodes:
+					next_node = named_nodes[spec]
+				else:
+					next_node = NaubScene.instance()
+					add_child(next_node)
+					named_nodes[spec] = next_node
 			else:
+				if new_name in named_nodes:
+					next_node = named_nodes[new_name]
+				else:
+					next_node = NaubScene.instance()
+					add_child(next_node)
+					if new_name:
+						named_nodes[new_name] = next_node
+				nodes.push_back(next_node)
+				
 				assert(spec in palette1)
 				color = palette1[spec]
-				next_node = NaubScene.instance()
 				(next_node as Naub).mode = RigidBody2D.MODE_STATIC
 				next_node.modulate = color
-				add_child(next_node)
-				nodes.push_back(next_node)
-				if new_name:
-					named_nodes[new_name] = next_node
+				
 			if current_node:
 				link_together(current_node, next_node)
 			current_node = next_node
