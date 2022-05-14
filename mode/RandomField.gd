@@ -1,46 +1,6 @@
 extends Node2D
 
 
-var NaubScene = preload("res://ingame/Naub.tscn")
-
-
-var palette1 = {
-	"r": Color8(229, 53, 23),
-	"g": Color8(151, 190, 13), 
-	"b": Color8(0, 139, 208),
-	"y": Color8(255, 204, 0),
-	"p": Color8(226, 0, 122),
-	"l": Color8(100, 31, 128),
-	"black": Color8(41, 14, 3),
-}
-
-
-func pick(arr):
-	return arr[randi() % len(arr)]
-
-# pick a random color
-func r():
-	return pick("rrggbby")
-
-func join(arr: Array, with: String):
-	var ret = ""
-	for i in len(arr) - 1:
-		ret += arr[i] + with
-	ret += arr[-1]
-	return ret
-
-
-func chain(specs: Array):
-	return join(specs, ".")
-
-
-func random_chain():
-	if randf() < 0.8:
-		return chain([r(), r(), r()])
-	else:
-		return chain([r(), r()])
-
-
 func _ready():
 	randomize()
 	spawn_chains("r.g", Vector2.ZERO, 0)
@@ -48,16 +8,34 @@ func _ready():
 		var n = layer * 3
 		for angle in n:
 			angle = TAU * angle / n
-			var pos = polar(100 * layer, angle)
-			spawn_chains(random_chain(), pos, angle - PI/2)
+			var pos = _polar(100 * layer, angle)
+			spawn_chains(_random_chain(), pos, angle - PI/2)
 
 
-func polar(length, angle):
-	return Vector2(length, 0).rotated(angle)
+func _unhandled_input(event):
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		event = make_input_local(event)
+		event.position = to_global(event.position)
+	
+	if event is InputEventScreenTouch:
+		Global.touches[event.index] = {
+			index = event.index,
+			position = event.position,
+			pressed = event.pressed,
+			speed = Vector2.ZERO,
+		}
+	elif event is InputEventScreenDrag:
+		var touch = Global.touches[event.index]
+		touch.position = event.position
+		touch.speed = event.speed
+	
+	if event is InputEventScreenTouch and event.pressed:		
+		var space = get_world_2d().direct_space_state
+		var hits = space.intersect_point(event.position)
+		for hit in hits:
+			if hit.collider is Naub:
+				(hit.collider as Naub).follow_touch = event.index			
 
-
-func clock(hour: int):
-	return TAU * ((hour % 12) / 12.0)
 
 #
 # A chains definition looks like so:
@@ -67,14 +45,14 @@ func clock(hour: int):
 #  red.green.blue yellow.yellow
 #
 # So above example are two chains.
-# One is a chain of a red, green and a blue node.
+# One is a _chain of a red, green and a blue node.
 # They are linked in this order, red with green and green with blue.
-# The second chain is a pair of two yellow nodes.
+# The second _chain is a pair of two yellow nodes.
 # This way you can create linear chains of nodes.
 #
 # Note that the color definition is the name of the color
 # from your palette. So when in your palette are entries like "r", "g", "b"
-# you can define your chain concisely like so:
+# you can define your _chain concisely like so:
 #
 #  r.g.b
 #
@@ -85,17 +63,17 @@ func clock(hour: int):
 #
 # Reference names to nodes are given with a colon (:).
 # Chain one is a red (r), green (g) and blue (b) node but the green one has the name 1.
-# The second chain links two yellow nodes to node 1, which is the green node from the other chain.
+# The second _chain links two yellow nodes to node 1, which is the green node from the other _chain.
 #
-# You can also refer to nodes which are defined in a later chain.
+# You can also refer to nodes which are defined in a later _chain.
 #
 #  r.1.b  y.1:g.y
 #
-# This way the green node is position in the second chain.
+# This way the green node is position in the second _chain.
 #
 func spawn_chains(def: String, pos: Vector2, angle: float):
-	var node_offset = polar(Global.NAUB_LINK_WANTED_DISTANCE, angle)
-	var chain_offset = polar(Global.NAUB_LINK_WANTED_DISTANCE, angle - PI/2)
+	var node_offset = _polar(Global.NAUB_LINK_WANTED_DISTANCE, angle)
+	var chain_offset = _polar(Global.NAUB_LINK_WANTED_DISTANCE, angle - PI/2)
 	_spawn_chains(def, pos, node_offset, chain_offset)
 
 func _spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
@@ -131,25 +109,25 @@ func _spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_o
 				if spec in named_nodes:
 					next_node = named_nodes[spec]
 				else:
-					next_node = NaubScene.instance()
+					next_node = Global.NaubScene.instance()
 					add_child(next_node)
 					named_nodes[spec] = next_node
 			else:
 				if new_name in named_nodes:
 					next_node = named_nodes[new_name]
 				else:
-					next_node = NaubScene.instance()
+					next_node = Global.NaubScene.instance()
 					add_child(next_node)
 					if new_name:
 						named_nodes[new_name] = next_node
 				nodes.push_back(next_node)
 				
-				assert(spec in palette1)
-				color = palette1[spec]
+				assert(spec in Global.NAUBINO_PALETTE)
+				color = Global.NAUBINO_PALETTE[spec]
 				next_node.modulate = color
 				
 			if current_node:
-				link_together(current_node, next_node)
+				_link_together(current_node, next_node)
 			current_node = next_node
 		node_chains.push_back(nodes)
 	
@@ -165,31 +143,37 @@ func _spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_o
 	return node_chains
 
 
-func link_together(a: Naub, b: Naub):
+func _link_together(a: Naub, b: Naub):
 	Global.link_two_naubs_together(a, b)
 
 
-func _unhandled_input(event):
-	if event is InputEventScreenTouch or event is InputEventScreenDrag:
-		event = make_input_local(event)
-		event.position = to_global(event.position)
+# pick a random color
+func r():
+	return pick("rrggbby")
+
+
+func _random_chain():
+	if randf() < 0.8:
+		return _chain([r(), r(), r()])
+	else:
+		return _chain([r(), r()])
+
+
+func _join(arr: Array, with: String):
+	var ret = ""
+	for i in len(arr) - 1:
+		ret += arr[i] + with
+	ret += arr[-1]
+	return ret
+
+
+func pick(arr):
+	return arr[randi() % len(arr)]
+
+
+func _chain(specs: Array):
+	return _join(specs, ".")
+
 	
-	if event is InputEventScreenTouch:
-		Global.touches[event.index] = {
-			index = event.index,
-			position = event.position,
-			pressed = event.pressed,
-			speed = Vector2.ZERO,
-		}
-	elif event is InputEventScreenDrag:
-		var touch = Global.touches[event.index]
-		touch.position = event.position
-		touch.speed = event.speed
-	
-	if event is InputEventScreenTouch and event.pressed:		
-		var space = get_world_2d().direct_space_state
-		var hits = space.intersect_point(event.position)
-		for hit in hits:
-			if hit.collider is Naub:
-				(hit.collider as Naub).follow_touch = event.index
-		
+func _polar(length, angle):
+	return Vector2(length, 0).rotated(angle)

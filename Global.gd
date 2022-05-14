@@ -20,7 +20,10 @@ func are_neighbors(naub_a, naub_b):
 	return false
 
 
+var NaubScene = preload("res://ingame/Naub.tscn")
 var NaubLinkScene = preload("res://ingame/NaubLink.tscn")
+
+
 func link_two_naubs_together(active_naub: Naub, other_naub: Naub):
 	var link: NaubLink = NaubLinkScene.instance()
 	link.attach_to_naubs(active_naub, other_naub)
@@ -33,3 +36,13 @@ var touches: Dictionary = {}
 var NAUB_RADIUS = 18
 var NAUB_LINK_WANTED_DISTANCE = NAUB_RADIUS * 4
 var NAUB_LINK_LINE_WIDTH = NAUB_RADIUS / 3
+
+var NAUBINO_PALETTE = {
+	"r": Color8(229, 53, 23),
+	"g": Color8(151, 190, 13), 
+	"b": Color8(0, 139, 208),
+	"y": Color8(255, 204, 0),
+	"p": Color8(226, 0, 122),
+	"l": Color8(100, 31, 128),
+	"black": Color8(41, 14, 3),
+}
