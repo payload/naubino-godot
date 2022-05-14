@@ -15,13 +15,6 @@ var palette1 = {
 }
 
 
-func get_random_color() -> Color:
-	var colors = [Color.red, Color.green, Color.blue,
-		Color.aqua, Color.yellow, Color.fuchsia]
-	colors = [Color8(229, 53, 23), Color8(151, 190, 13), Color8(0, 139, 208), Color8(255, 204, 0), Color8(226, 0, 122), Color8(100, 31, 128), Color8(41, 14, 3)]
-	return colors[randi() % len(colors)]
-
-
 func _ready():
 	randomize()
 	spawn_some_chain()
@@ -33,7 +26,7 @@ func spawn_some_chain():
 	var init_pos = polar(200, normal)
 	var node_offset = polar(naub_distance, tangent)
 	var chain_offset = polar(naub_distance, normal)
-	var chains = spawn_chains("r.g.b.1:black.y.p.l", init_pos, node_offset, chain_offset)
+	spawn_chains("r.g.b.1:black.y.p.l", init_pos, node_offset, chain_offset)
 
 
 func polar(length, angle):
@@ -43,7 +36,40 @@ func polar(length, angle):
 func clock(hour: int):
 	return TAU * ((hour % 12) / 12.0)
 
-
+#
+# A chains definition looks like so:
+# Chains a split by spaces. Nodes linked by dots.
+# Nodes are described for example by their color.
+#
+#  red.green.blue yellow.yellow
+#
+# So above example are two chains.
+# One is a chain of a red, green and a blue node.
+# They are linked in this order, red with green and green with blue.
+# The second chain is a pair of two yellow nodes.
+# This way you can create linear chains of nodes.
+#
+# Note that the color definition is the name of the color
+# from your palette. So when in your palette are entries like "r", "g", "b"
+# you can define your chain concisely like so:
+#
+#  r.g.b
+#
+# When you want to link multiple nodes to a single node, you can define
+# multiple chains and use a number reference to refer to the same node multiple times.
+#
+#  r.1:g.b   y.1.y
+#
+# Reference names to nodes are given with a colon (:).
+# Chain one is a red (r), green (g) and blue (b) node but the green one has the name 1.
+# The second chain links two yellow nodes to node 1, which is the green node from the other chain.
+#
+# You can also refer to nodes which are defined in a later chain.
+#
+#  r.1.b  y.1:g.y
+#
+# This way the green node is position in the second chain.
+#
 func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_offset: Vector2):
 	var named_nodes = {}
 	var node_chains = []
@@ -113,25 +139,6 @@ func spawn_chains(def: String, init_pos: Vector2, node_offset: Vector2, chain_of
 
 func link_together(a: Naub, b: Naub):
 	Global.link_two_naubs_together(a, b)
-
-
-func spawn_some(distance: float):	
-	var naub1: Naub = NaubScene.instance()
-	var naub2: Naub = NaubScene.instance()
-	
-	var radius_sum = naub1.radius + naub2.radius
-	var pos = Vector2(distance, 0).rotated(TAU * randf())
-	var off = Vector2(radius_sum * 1.7 / 2, 0).rotated(TAU * randf())
-	naub1.global_position = pos + off
-	naub2.global_position = pos - off
-	
-	naub1.modulate = get_random_color()
-	naub2.modulate = get_random_color()
-	
-	add_child(naub1)
-	add_child(naub2)
-	Global.emit_naub_naub_contact(naub1, naub2)
-
 
 
 func _unhandled_input(event):
